@@ -24,19 +24,23 @@ extension ViewController {
     func signInToFirebase(email: String, password: String){
         showActivityIndicator()
         //MARK: authenticating the user...
-        Auth.auth().signIn(withEmail: email, password: password, completion: {(result, error) in
-            if error == nil{
+        Auth.auth().signIn(withEmail: email, password: password, completion: { [weak self] (result, error) in
+            guard let self = self else { return }
+            //MARK: can you hide the progress indicator here?
+            self.hideActivityIndicator()
+
+            if error == nil {
                 print("successfully logged in")
+                //MARK: user authenticated...
                 self.hideActivityIndicator()
                 let photoSwipeViewController = PhotoSwipeViewController()
                 //MARK: duplicated push
                 self.navigationController?.pushViewController(photoSwipeViewController, animated: true)
-            }else{
+            } else {
+                print("Error signing in: \(error?.localizedDescription ?? "Unknown error")")
+                showIncorrectErrorAlert()
                 self.hideActivityIndicator()
-                print(error)
-                //MARK: alert that no user found or password wrong...
             }
-            
         })
     }
     
@@ -46,7 +50,12 @@ extension ViewController {
     }
     
     func showEmptyErrorAlert(){
-        let alert = UIAlertController(title: "Error", message: "The inputs cannot be empty!", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Error", message: "Please fill in empty inputs", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        self.present(alert, animated: true)
+    }
+    func showIncorrectErrorAlert(){
+        let alert = UIAlertController(title: "Error", message: "Password or Email Incorrect", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         self.present(alert, animated: true)
     }

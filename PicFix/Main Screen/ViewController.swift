@@ -34,6 +34,9 @@ class ViewController: UIViewController {
                 self.navigationController?.pushViewController(photoSwipeViewController, animated: true)
             }
         }
+        
+        mainScreenView.logInButton.addTarget(self, action: #selector(onLogInButtonTapped), for: .touchUpInside)
+        mainScreenView.signUpButton.addTarget(self, action: #selector(onSignUpButtonTapped), for: .touchUpInside)
     }
 
     override func viewDidLoad() {
